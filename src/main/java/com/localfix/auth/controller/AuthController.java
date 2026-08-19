@@ -6,7 +6,10 @@ import com.localfix.auth.dto.response.LoginResponse;
 import com.localfix.auth.dto.response.RegisterResponse;
 import com.localfix.auth.email.EmailService;
 import com.localfix.auth.service.AuthService;
+import com.localfix.common.enums.RoleType;
 import com.localfix.common.response.ApiResponse;
+import com.localfix.user.role.entity.Role;
+import com.localfix.user.role.repository.RoleRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,7 +23,6 @@ public class AuthController {
 
     private final AuthService authService;
 
-    private final EmailService emailService;
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<RegisterResponse>> register(

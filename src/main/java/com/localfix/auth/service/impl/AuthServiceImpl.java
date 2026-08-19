@@ -45,10 +45,12 @@ public class AuthServiceImpl implements AuthService {
     public RegisterResponse register(RegisterRequest request) {
 
         if (userRepository.existsByEmail(request.email())) {
+            log.error("======================Email already registered======================");
             throw new ResourceAlreadyExistsException("Email already registered.");
         }
 
         if (userRepository.existsByMobile(request.mobile())) {
+            log.error("======================Mobile number already registered======================");
             throw new ResourceAlreadyExistsException("Mobile number already registered.");
         }
 
@@ -71,6 +73,7 @@ public class AuthServiceImpl implements AuthService {
         user.setMobileVerified(false);
 
         User savedUser = userRepository.save(user);
+        log.error("======================User registered successfully======================");
 
         return RegisterResponse.builder()
                 .userId(savedUser.getId())

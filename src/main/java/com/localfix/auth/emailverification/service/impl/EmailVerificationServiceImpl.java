@@ -14,6 +14,7 @@ import com.localfix.common.exception.ResourceNotFoundException;
 import com.localfix.user.entity.User;
 import com.localfix.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class EmailVerificationServiceImpl implements EmailVerificationService {
 
     private final UserRepository userRepository;
@@ -31,41 +33,32 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
     @Override
     public void sendVerificationOtp() {
-
         // Get logged-in user email
         String email = SecurityUtils.getCurrentUsername();
-
         // Fetch user
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found"));
-
         // Already verified?
         if (Boolean.TRUE.equals(user.getEmailVerified())) {
+            log.error("=============Email is already verified.=============");
             throw new ResourceAlreadyExistsException("Email is already verified.");
         }
-
         // Remove old OTP if present
         emailVerificationRepository.findByUser(user)
                 .ifPresent(emailVerificationRepository::delete);
-
         // Generate OTP
         String otp = otpGenerator.generateOtp();
-
         // Create entity
         EmailVerification verification = new EmailVerification();
-
         verification.setUser(user);
         verification.setOtp(otp);
         verification.setVerified(false);
         verification.setExpiresAt(LocalDateTime.now().plusMinutes(5));
-
         // Save
         emailVerificationRepository.save(verification);
-
         // Send Email
         String subject = "LocalFix Email Verification";
-
         String body = """
             Hello %s,
 
@@ -101,6 +94,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
                         new ResourceNotFoundException("User not found"));
 
         if (Boolean.TRUE.equals(user.getEmailVerified())) {
+            log.error("=============Email already verified.=============");
             throw new ResourceAlreadyExistsException("Email already verified.");
         }
 
@@ -111,11 +105,13 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
         // Check expiry
         if (verification.getExpiresAt().isBefore(LocalDateTime.now())) {
+            log.error("=============OTP has expired.=============");
             throw new OtpExpiredException("OTP has expired.");
         }
 
         // Check OTP
         if (!verification.getOtp().equals(request.otp())) {
+            log.error("=============Invalid OTP.=============");
             throw new InvalidOtpException("Invalid OTP.");
         }
 
@@ -140,6 +136,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
                         new ResourceNotFoundException("User not found"));
 
         if (Boolean.TRUE.equals(user.getEmailVerified())) {
+            log.info("=============Email already verified.=============");
             throw new ResourceAlreadyExistsException("Email already verified.");
         }
 
@@ -181,5 +178,6 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
                 subject,
                 body
         );
+        log.info("=============new verification code sent.=============");
     }
 }
