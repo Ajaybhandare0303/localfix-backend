@@ -1,0 +1,11 @@
+target/
+.idea/
+.git/
+.gitignore
+.env
+.env.*
+*.log
+*.p12
+*.jks
+*.keystore
+*.pem
