@@ -6,6 +6,7 @@ import com.localfix.service.dto.request.UpdateServiceRequest;
 import com.localfix.service.dto.response.ServiceResponse;
 import com.localfix.service.service.ServiceManagementService;
 import com.localfix.servicecategory.dto.response.PageResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/v1/services")
 @RequiredArgsConstructor
@@ -25,6 +27,7 @@ public class ServiceController {
 
     private final ServiceManagementService serviceManagementService;
 
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping
     public ResponseEntity<ApiResponse<ServiceResponse>> createService(
             @Valid @RequestBody CreateServiceRequest request) {
@@ -40,6 +43,7 @@ public class ServiceController {
                 );
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<ServiceResponse>>> getAllServices(
             @RequestParam(defaultValue = "0")
