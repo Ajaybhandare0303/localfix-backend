@@ -5,6 +5,7 @@ import com.localfix.provider.service.ProviderServiceMappingService;
 
 import com.localfix.provider.services.dto.request.AddProviderServiceRequest;
 import com.localfix.provider.services.dto.response.ProviderServiceResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/v1/providers/me/services")
 @RequiredArgsConstructor

@@ -8,6 +8,7 @@ import com.localfix.provider.dto.response.ProviderListResponse;
 import com.localfix.provider.dto.response.ProviderResponse;
 import com.localfix.provider.service.ProviderService;
 import com.localfix.servicecategory.dto.response.PageResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/v1/providers")
 @RequiredArgsConstructor

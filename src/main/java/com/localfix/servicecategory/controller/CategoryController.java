@@ -5,6 +5,7 @@ import com.localfix.servicecategory.dto.request.CreateCategoryRequest;
 import com.localfix.servicecategory.dto.request.UpdateCategoryRequest;
 import com.localfix.servicecategory.dto.response.CategoryResponse;
 import com.localfix.servicecategory.service.ServiceCategoryService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/v1/categories")
 @RequiredArgsConstructor
