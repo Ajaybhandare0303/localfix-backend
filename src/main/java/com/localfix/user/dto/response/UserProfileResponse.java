@@ -1,31 +1,31 @@
-package com.localfix.user.dto.response;
+    package com.localfix.user.dto.response;
 
-import com.localfix.common.enums.AccountStatus;
-import lombok.Builder;
+    import com.localfix.common.enums.AccountStatus;
+    import lombok.Builder;
 
-import java.util.Set;
-import java.util.UUID;
+    import java.util.Set;
+    import java.util.UUID;
 
-@Builder
-public record UserProfileResponse(
+    @Builder
+    public record UserProfileResponse(
 
-        UUID id,
+            UUID id,
 
-        String firstName,
+            String firstName,
 
-        String lastName,
+            String lastName,
 
-        String email,
+            String email,
 
-        String mobile,
+            String mobile,
 
-        AccountStatus accountStatus,
+            AccountStatus accountStatus,
 
-        Boolean emailVerified,
+            Boolean emailVerified,
 
-        Boolean mobileVerified,
+            Boolean mobileVerified,
 
-        Set<String> roles
+            Set<String> roles
 
-) {
-}
+    ) {
+    }
