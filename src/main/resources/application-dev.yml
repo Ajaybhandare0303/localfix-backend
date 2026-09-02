@@ -14,7 +14,7 @@ spring:
     show-sql: true
 
   mail:
-    host: ${DEV_MAIL_HOST}
+    host: smtp.gmail.com
     port: ${DEV_MAIL_PORT}
     username: ${DEV_MAIL_USERNAME}
     password: ${DEV_MAIL_PASSWORD}
