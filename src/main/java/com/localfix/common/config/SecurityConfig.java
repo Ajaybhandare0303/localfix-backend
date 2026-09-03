@@ -26,54 +26,135 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    // ============================================================
+    // Password Encoder
+    // ============================================================
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // ============================================================
+    // Authentication Provider
+    // ============================================================
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
 
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        DaoAuthenticationProvider provider =
+                new DaoAuthenticationProvider();
 
-        provider.setUserDetailsService(customUserDetailsService);
+        provider.setUserDetailsService(
+                customUserDetailsService
+        );
 
-        provider.setPasswordEncoder(passwordEncoder());
+        provider.setPasswordEncoder(
+                passwordEncoder()
+        );
 
         return provider;
     }
+
+    // ============================================================
+    // Authentication Manager
+    // ============================================================
 
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration configuration)
             throws Exception {
+
         return configuration.getAuthenticationManager();
     }
 
+    // ============================================================
+    // Security Filter Chain
+    // ============================================================
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http)
             throws Exception {
 
         http
+
+                // ------------------------------------------------
+                // CSRF
+                // ------------------------------------------------
                 .csrf(csrf -> csrf.disable())
+
+                // ------------------------------------------------
+                // Disable default authentication mechanisms
+                // ------------------------------------------------
                 .formLogin(form -> form.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
-                .authenticationProvider(authenticationProvider())
+
+                // ------------------------------------------------
+                // Authentication Provider
+                // ------------------------------------------------
+                .authenticationProvider(
+                        authenticationProvider()
+                )
+
+                // ------------------------------------------------
+                // Authorization Rules
+                // ------------------------------------------------
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/auth/**").permitAll()
+
+                        // ================================
+                        // Authentication APIs
+                        // ================================
+                        .requestMatchers(
+                                "/api/v1/auth/login",
+                                "/api/v1/auth/register",
+                                "/api/v1/auth/forgot-password",
+                                "/api/v1/auth/verify-reset-otp",
+                                "/api/v1/auth/reset-password"
+                        ).permitAll()
+
+                        // ================================
+                        // Swagger
+                        // ================================
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**"
                         ).permitAll()
-                        .requestMatchers("/actuator/health").permitAll()
+
+                        // ================================
+                        // Actuator
+                        // ================================
+                        .requestMatchers(
+                                "/actuator/health"
+                        ).permitAll()
+
+                        // ================================
+                        // Everything else
+                        // ================================
                         .anyRequest().authenticated()
                 )
+
+                // ------------------------------------------------
+                // CORS
+                // ------------------------------------------------
                 .cors(Customizer.withDefaults())
+
+                // ------------------------------------------------
+                // Security Headers
+                // ------------------------------------------------
                 .headers(headers -> headers
-                        .frameOptions(frame -> frame.deny())
-                        .contentTypeOptions(Customizer.withDefaults())
+                        .frameOptions(frame ->
+                                frame.deny()
+                        )
+                        .contentTypeOptions(
+                                Customizer.withDefaults()
+                        )
                 )
+
+                // ------------------------------------------------
+                // JWT Filter
+                // ------------------------------------------------
                 .addFilterBefore(
                         jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class
